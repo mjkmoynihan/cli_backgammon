@@ -1,4 +1,4 @@
-# bgcli - backgammon move advisor
+# bgcli - backgammon tutor
 
 An interactive terminal front end for [GNU Backgammon](https://www.gnu.org/software/gnubg/).
 Play against the gnubg bot, or track a real game and let gnubg tell you what it would play.
