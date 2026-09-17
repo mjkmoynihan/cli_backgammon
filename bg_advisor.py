@@ -67,6 +67,8 @@ class Board:
     def __init__(self):
         self.me = [0] * 26
         self.opp = [0] * 26
+        self.width = 80
+        self.margin = 20
         for arr in (self.me, self.opp):
             arr[24], arr[13], arr[8], arr[6] = 2, 5, 3, 5
 
@@ -150,6 +152,11 @@ class Board:
             arr[OFF] = max(0, 15 - sum(arr[1:26]))
         return b
 
+    @staticmethod
+    def pips(arr):
+        """Pip count for one side (arr indexed in that side's own numbering; bar = 25)."""
+        return sum(p * arr[p] for p in range(1, 26))
+
     # ---- rendering ------------------------------------------------------- #
     def render(self):
         """ASCII board from my point of view. X = me, O = opponent.
@@ -185,19 +192,19 @@ class Board:
             return " " + "  ".join(cells[:6]) + " |  " + "  ".join(cells[6:]) + " "
 
         out = []
-        out.append("="*80)
-        out.append(" " + " ".join(f"{p:2d}" for p in top[:6]) + " | " + " ".join(f"{p:2d}" for p in top[6:]))
-        out.append(" +" + "-" * 17 + "+" + "-" * 19 + "+")
+        out.append("="*self.width)
+        out.append(" "*self.margin +" "+" ".join(f"{p:2d}" for p in top[:6]) + " | " + " ".join(f"{p:2d}" for p in top[6:]))
+        out.append(" "*self.margin+"+" + "-" * 17 + "+" + "-" * 19 + "+")
         for cells in col_lines(top, from_top=True):
-            out.append(" |" + fmt(cells)[1:-1] + " |")
-        out.append(" |" + " " * 17 + "|" + " " * 19 + "|")
+            out.append(" "*self.margin+"|" + fmt(cells)[1:-1] + " |")
+        out.append(" "*self.margin+"|" + " " * 17 + "|" + " " * 19 + "|")
         for cells in col_lines(bottom, from_top=False):
-            out.append(" |" + fmt(cells)[1:-1] + " |")
-        out.append(" +" + "-" * 17 + "+" + "-" * 19 + "+")
-        out.append(" " + " ".join(f"{p:2d}" for p in bottom[:6]) + " | " + " ".join(f"{p:2d}" for p in bottom[6:]))
-        out.append(f"  X = me  (bar {self.me[BAR]}, off {self.me[OFF]})     "
-                   f"O = opp  (bar {self.opp[BAR]}, off {self.opp[OFF]})")
-        out.append("="*80)
+            out.append(" "*self.margin+"|" + fmt(cells)[1:-1] + " |")
+        out.append(" "*self.margin+"+" + "-" * 17 + "+" + "-" * 19 + "+")
+        out.append(" "*self.margin +" "+" ".join(f"{p:2d}" for p in bottom[:6]) + " | " + " ".join(f"{p:2d}" for p in bottom[6:]))
+        out.append(f"  X = me  (bar {self.me[BAR]}, off {self.me[OFF]}, count {self.pips(self.me)})     "
+                   f"O = opp  (bar {self.opp[BAR]}, off {self.opp[OFF]}, count {self.pips(self.opp)})")
+        out.append("="*self.width)
         return "\n".join(out)
 
 
